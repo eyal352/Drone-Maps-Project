@@ -9,38 +9,69 @@
         <title></title>
         <meta name="description" content="Map Drone Project">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="apple-touch-icon" href="/img/drone-favicon.png">
+        <link rel="icon" href="/img/drone.png">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-
-
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css"> <!-- update to CDNs -->
         <link rel="stylesheet" href="css/jasny-bootstrap.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/style.css">
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-      <header>
-        <nav>
-      
-        </nav>
-        <div class="container"> </div> 
-      </header>
+ 
+   <body>
+    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
+      <a class="navmenu-brand visible-md visible-lg" href="#">Map Drone Project</a>
+      <ul class="nav navmenu-nav">
+        <li><input type="search" name="search" placeholder="Search year or country"></li>
+        <li><input type="range" min="2002" max="20016" step="1" value="2002"></li>
+        <li><a href="../navmenu-reveal/">Reveal</a></li>
+        <li><a href="../navbar-offcanvas/">Off canvas navbar</a></li>
+      </ul>
+      <ul class="nav navmenu-nav">
+        <li><a href="#">Link</a></li>
+        <li><a href="#">Link</a></li>
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+          <ul class="dropdown-menu navmenu-nav">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Nav header</li>
+            <li><a href="#">Separated link</a></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+        <div class="about">
+          <span>About</span>
+          <p class="about__discription"></p>
+        </div>
+      </ul>
+    </div>
 
-      
-      <div class="container" id="map"></div>
-      
-      
+    <div class="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Map Drone Project</a>
+    </div>
+
+    <div class="" id="mapDiv">
+       <div id='map'> </div>
+      </div>
+
+     <!-- /.container -->
+
+
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/jasny-bootstrap.js"></script>
-
-        <script src="js/main.js"></script>
+      <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script> <!-- knockout.JS CDN -->
+      <script src="js/vendor/bootstrap.min.js"></script>
+      <script src="js/vendor/jasny-bootstrap.js"></script>
+      <script src="js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script async>
@@ -51,7 +82,6 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
-      
         <script async
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGymPUWm4ZbUYQaCxIE0dFYvyGI7pMHi0&v=3&callback=initMap">
         </script>
