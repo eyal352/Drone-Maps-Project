@@ -47,8 +47,11 @@ var ViewModel = function() {
   var strikeData = DroneRequest();
   // successful AJAX call will run the following code
   strikeData.success(function(response) {
-    self.strikeArray.push(response.strike[1].country);
-    self.strikeArray.push(response.strike[2].country)
+    var l, i;
+    for(l=response.strike.length, i=0; i<l; i++){
+      self.strikeArray.push(response.strike[i].country);
+    }
+    
     console.log(response.strike);
   
   })
