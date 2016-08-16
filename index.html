@@ -24,30 +24,16 @@
       <ul class="nav navmenu-nav">
         <li><input type="search" name="search" placeholder="Search year or country"></li>
         <li><input type="range" min="2002" max="20016" step="1" value="2002"></li>
-        <li><a href="../navmenu-reveal/">Reveal</a></li>
-        <li><a href="../navbar-offcanvas/">Off canvas navbar</a></li>
       </ul>
-      <ul class="nav navmenu-nav">
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
-        <li><a href="#">Link</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-          <ul class="dropdown-menu navmenu-nav">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li class="dropdown-header">Nav header</li>
-            <li><a href="#">Separated link</a></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li>
-        <div class="about">
-          <span>About</span>
-          <p class="about__discription"></p>
-        </div>
+      <ul id="array-list" class="nav navmenu-nav" data-bind="text:strikeArray">
+        <li>Strike 1</li>
+        <li>Strike 2</li>
+        <li>Strike 3</li>
       </ul>
+      <div id="about">
+        <span>About</span>
+        <p class="about__discription"></p>
+      </div>
     </div>
 
     <div class="navbar navbar-default navbar-fixed-top hidden-md hidden-lg">

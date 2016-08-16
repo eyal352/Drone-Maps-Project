@@ -50,6 +50,11 @@ body {
   max-width: 100%;
 }
 
+#about {
+  position: fixed;
+  bottom: 0px;
+}
+
 @media (min-width: 1px) {
   .navbar-toggle {
     display: block !important;

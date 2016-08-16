@@ -9,26 +9,21 @@ function initMap() {
   });
 };
 
-
 var ViewModel = function() {
   var self = this;
   var strikeLocations;
 
+  this.strikeArray = ko.observableArray([]);
 
 
 // ajax for Drone Strike Data
-  var DroneRequest = $.ajax({
+  function DroneRequest() {
+    return $.ajax({
     url: 'http://api.dronestre.am/data',
     dataType: 'jsonp',
-    headers: 'http://127.0.0.1:64781/index.html'
-
   })
-    .done(function(response){
-       strikeLocations = response.strike;
-      
-      console.log(strikeLocations);
-      })
-    // If there is an error detected, the following code will execute
+
+  // If there is an error detected, the following code will execute
     .error(function(jqXHR, exception) {
          var msg = '';
           if (jqXHR.status === 0) {
@@ -48,8 +43,15 @@ var ViewModel = function() {
           }
           console.log(msg + ' Please Try Again.');
     });
+  }
+  var strikeData = DroneRequest();
+  // successful AJAX call will run the following code
+  strikeData.success(function(response) {
+    self.strikeArray.push(response.strike);
+  
+  
+  })
 
-    console.log(strikeLocations);
 }
 
 ko.applyBindings(new ViewModel());
