@@ -55,6 +55,11 @@ body {
   bottom: 0px;
 }
 
+#array-list {
+  height: 88%;
+  overflow: scroll;
+}
+
 @media (min-width: 1px) {
   .navbar-toggle {
     display: block !important;
