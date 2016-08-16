@@ -13,7 +13,7 @@ var ViewModel = function() {
   var self = this;
   var strikeLocations;
 
-  this.strikeArray = ko.observableArray([]);
+  this.strikeArray = ko.observableArray();
 
 
 // ajax for Drone Strike Data
@@ -47,8 +47,9 @@ var ViewModel = function() {
   var strikeData = DroneRequest();
   // successful AJAX call will run the following code
   strikeData.success(function(response) {
-    self.strikeArray.push(response.strike);
-  
+    self.strikeArray.push(response.strike[1].country);
+    self.strikeArray.push(response.strike[2].country)
+    console.log(response.strike);
   
   })
 
