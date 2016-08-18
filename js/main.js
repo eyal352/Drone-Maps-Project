@@ -7,6 +7,9 @@ function initMap() {
     center: {lat: 19.6537752, lng: 60.6663377},
     zoom: 5
   });
+
+  ko.applyBindings(new ViewModel());
+
 };
 
 var ViewModel = function() {
@@ -14,7 +17,10 @@ var ViewModel = function() {
   var strikeLocations;
 
   this.strikeArray = ko.observableArray();
-
+  //on click - show location in console
+  this.showInfo = function(location) {
+    console.log(location);
+  }
 
 // ajax for Drone Strike Data
   function DroneRequest() {
@@ -46,16 +52,21 @@ var ViewModel = function() {
   }
   var strikeData = DroneRequest();
   // successful AJAX call will run the following code
-  strikeData.success(function(response) {
-    var l, i;
-    for(l=response.strike.length, i=0; i<l; i++){
-      self.strikeArray.push(response.strike[i].country);
-    }
-    
-    console.log(response.strike);
-  
-  })
+  strikeData.done(function(response) {
+    response.strike.forEach(function(strike) {
+      var marker = new google.maps.Marker({
+        position: {lat: Number(strike.lat), lng: Number(strike.lon) },
+        title: strike.location,
+        animation: google.maps.Animation.DROP,
+        icon:  'img/drone.png',
+        map: map
+        });
+      
+      strike.marker = marker;
+      self.strikeArray.push(strike);
+      })
 
+  })
+ console.log(self.strikeArray());
 }
 
-ko.applyBindings(new ViewModel());
