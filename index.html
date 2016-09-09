@@ -19,21 +19,38 @@
     </head>
  
    <body>
-    <div class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">The Map Drone Project</h4>
+          </div>
+          <div class="modal-body">
+            <p>The <b>Map Drone Project</b> is a webapp designed by <a href="http://www.eyalchistik.com" target="_blank">Eyal Chistik</a> in order to visualize US drone strikes in the Middle East. It was built using data from the <a href="http://dronestre.am" target="_blank">dronestre.am API</a> in addition to articles from <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a> and <a href="https://www.thebureauinvestigates.com/" target="_blank">The Bureau Investigates</a>. This project is completely open source and you can see all the code on <a href="https://github.com/eyal352/Drone-Maps-Project" target="_blank">Github</a></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+     </div>
+     <!-- end modal -->
+     <div id="navmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
       <a class="navmenu-brand visible-md visible-lg" href="#">Map Drone Project</a>
-      <ul class="nav navmenu-nav">
-        <li><input type="search" name="search" placeholder="Search year or country"></li>
-        <li><input type="range" min="2002" max="20016" step="1" value="2002"></li>
-      </ul>
+      <div class="nav navmenu-nav">
+        <div><input type="search" name="search" placeholder="Search year or country"></div>
+        <div id="stats"></div>
+      </div>
       <!-- showing the array of data -->
-      <ul id="array-list" class="nav navmenu-nav" data-bind="forEach: strikeArray">
-        <li data-bind="click:$parent.showInfo">
-          <p data-bind="text: $data.location"></p>
-          <p data-bind="text: $data.country"></p>
+      <ul id="array-list" class="nav navmenu-nav" data-bind="foreach: strikeArray">
+        <li id="array-list--item" data-bind="click:$parent.showInfo">
+          <span data-bind="text: $data.deaths"></span><span> reported deaths in </span><span data-bind="text: $data.location"></span>
+          <p>The attack occurred on <span data-bind="text: $data.marker.strikeDate"></span> </p>
         </li>
       </ul>
       <div id="about">
-        <span>About</span>
+        <a data-toggle="modal" data-target="#aboutModal" href="#">About</a>
         <p class="about__discription"></p>
       </div>
     </div>

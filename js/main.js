@@ -4,12 +4,11 @@ var map;
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 19.6537752, lng: 60.6663377},
+    center: {lat: 18.1195526, lng: 45.7935141},
     zoom: 5
   });
 
   ko.applyBindings(new ViewModel());
-
 };
 
 var ViewModel = function() {
@@ -17,10 +16,15 @@ var ViewModel = function() {
   var strikeLocations;
 
   this.strikeArray = ko.observableArray();
-  //on click - show location in console
-  this.showInfo = function(location) {
-    console.log(location);
+  this.filteredList = ko.observableArray();
+
+
+  this.showInfo = function(strikeObject) {
+     //show info window when the list item is clicked
+    google.maps.event.trigger(strikeObject.marker, 'click');
   }
+
+  var infowindow = new google.maps.InfoWindow();
 
 // ajax for Drone Strike Data
   function DroneRequest() {
@@ -28,7 +32,6 @@ var ViewModel = function() {
     url: 'http://api.dronestre.am/data',
     dataType: 'jsonp',
   })
-
   // If there is an error detected, the following code will execute
     .error(function(jqXHR, exception) {
          var msg = '';
@@ -47,26 +50,51 @@ var ViewModel = function() {
           } else {
               msg = 'Uncaught Error.\n' + jqXHR.responseText;
           }
-          console.log(msg + ' Please Try Again.');
+          alert(msg + ' Please Try Again.');
     });
   }
+
   var strikeData = DroneRequest();
+
   // successful AJAX call will run the following code
   strikeData.done(function(response) {
     response.strike.forEach(function(strike) {
       var marker = new google.maps.Marker({
-        position: {lat: Number(strike.lat), lng: Number(strike.lon) },
+        position: {lat: Number(strike.lat), lng: Number(strike.lon)}, // add ternary operator if blankm use town name
         title: strike.location,
         animation: google.maps.Animation.DROP,
-        icon:  'img/drone.png',
-        map: map
+        icon:  'img/bomb.png',
+        map: map,
+        deaths: strike.deaths,
+        strikeDate: strike.date.slice(0,10),
+        narrative: strike.narrative,
+        town: strike.town === "" ? 'Unknown town name' : strike.town,
+        article: strike.bij_link,
         });
-      
       strike.marker = marker;
+
+      var windowContent = '<div>'+ strike.narrative + '</div>' + "<div> <b>Location: </b>" + marker.town + ' in ' + marker.title + '</div>' + '</div>' + marker.deaths + ' Reported Casualties on ' + marker.strikeDate + '</div>' + '<div> Read more about the strike at <a href="'+ marker.article + '"target="_blank"> The Bureau Investigates </a></div>' + '<div>' + '<b>Learn more about ' + marker.title + ' on </b>' + '<a href="http://en.wikipedia.org/wiki/'+marker.title+'"' + 'target="_blank">' + 'Wikipedia' + '</a>' + '</div>';
+
+      google.maps.event.addListener(marker, 'click', function () {
+        infowindow.open(map, this);
+        infowindow.setContent(windowContent);
+        this.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+            marker.setAnimation(null);
+              }, 700);
+      });
+
       self.strikeArray.push(strike);
       })
 
   })
- console.log(self.strikeArray());
+  
+  
+  // display error message if Google Maps doesn't load
+  function googleError() {
+    document.getElementById('map').innerHTML = "<h2>Google Maps did not load. Please refresh the page and try again.</h2>";
+    };
+
+  console.log(self.strikeArray());
 }
 
