@@ -19,6 +19,7 @@ var ViewModel = function() {
   this.filteredList = ko.observableArray();
 
 
+
   this.showInfo = function(strikeObject) {
      //show info window when the list item is clicked
     google.maps.event.trigger(strikeObject.marker, 'click');
@@ -60,7 +61,8 @@ var ViewModel = function() {
   strikeData.done(function(response) {
     response.strike.forEach(function(strike) {
       var marker = new google.maps.Marker({
-        position: {lat: Number(strike.lat), lng: Number(strike.lon)}, // add ternary operator if blankm use town name
+        // defaults position to the town name if the lat and long are missing
+        position: strike.lat === "" && strike.lon === "" ? strike.town : {lat: Number(strike.lat), lng: Number(strike.lon)},
         title: strike.location,
         animation: google.maps.Animation.DROP,
         icon:  'img/bomb.png',
