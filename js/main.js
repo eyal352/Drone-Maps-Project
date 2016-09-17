@@ -10,14 +10,24 @@ function initMap() {
 
   ko.applyBindings(new ViewModel());
 };
+var geocoder;
 
 var ViewModel = function() {
   var self = this;
   var strikeLocations;
 
   this.strikeArray = ko.observableArray();
-  this.filteredList = ko.observableArray();
 
+  geocoder = new google.maps.Geocoder();
+  
+//  this.searchInput = ko.observable("");
+  
+ /*  self.search = ko.computed(function() {
+    // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
+    return ko.utils.arrayFilter(self.strikeArray(), function(place) {
+            return place.name.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0;
+    });
+  }); */
 
 
   this.showInfo = function(strikeObject) {
@@ -62,7 +72,15 @@ var ViewModel = function() {
     response.strike.forEach(function(strike) {
       var marker = new google.maps.Marker({
         // defaults position to the town name if the lat and long are missing
-        position: strike.lat === "" && strike.lon === "" ? strike.town : {lat: Number(strike.lat), lng: Number(strike.lon)},
+        position: strike.lat === "" && strike.lon === "" ? geocoder.geocode( { 'address': strike.location}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  var latitude = results[0].geometry.location.lat();
+                  var longitude = results[0].geometry.location.lng();
+                  } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                    //  setTimeout(wait, 5000);
+                    //  console.log(strike.number);
+                  } else { console.log('Geocode was not successful for the following reason: ' + status + ' for ' + strike.number); }
+              }) : {lat: Number(strike.lat), lng: Number(strike.lon)},
         title: strike.location,
         animation: google.maps.Animation.DROP,
         icon:  'img/bomb.png',

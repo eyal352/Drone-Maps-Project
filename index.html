@@ -39,8 +39,12 @@
      <div id="navmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas-sm">
       <a class="navmenu-brand visible-md visible-lg" href="#">Map Drone Project</a>
       <div class="nav navmenu-nav">
-        <div><input type="search" name="search" placeholder="Search year or country"></div>
-        <div id="stats"></div>
+        <div><!-- <input type="search" data-bind="textInput: value"  placeholder="Search..." /> --> </div>
+        <div id="stats">
+        <!--  <ul data-bind="foreach: search">
+            <li data-bind="text: $data.deaths"></li>
+          </ul> -->
+        </div> 
       </div>
       <!-- showing the array of data -->
       <ul id="array-list" class="nav navmenu-nav" data-bind="foreach: strikeArray">
