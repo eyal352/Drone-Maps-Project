@@ -16,6 +16,10 @@
   background-color: rgba(248, 248, 248, .9);
 }
 
+  #searchMenu {
+    margin-left: 15px;
+  }
+
 .icon-bar {
   background-color: dimgray;
 }
@@ -107,6 +111,5 @@ nav {color: rgba(153, 153, 153, .5);}
 
   #searchMenu {
     margin-top: 10px;
-    margin-left: 15px;
   }
 }
