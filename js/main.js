@@ -17,9 +17,9 @@ var ViewModel = function() {
 
   this.strikeArray = ko.observableArray();
 
-  geocoder = new google.maps.Geocoder();  // geocode strike results with no Lat Lng value
-  // declaring input variable
-  this.searchInput = ko.observable("");
+  geocoder = new google.maps.Geocoder();  // to geocode strike results with no Lat Lng value
+
+  this.searchInput = ko.observable(""); // declaring input variable
 
   this.searchResults = ko.computed(function() {
     // if no input, return full array
@@ -49,12 +49,10 @@ var ViewModel = function() {
     }
   });
 
-
+  //show info window when the list item is clicked
   this.showInfo = function(strikeObject) {
-     //show info window when the list item is clicked
     google.maps.event.trigger(strikeObject.marker, 'click');
-  }
-
+    }
   var infowindow = new google.maps.InfoWindow();
 
 // ajax for Drone Strike Data
@@ -87,7 +85,7 @@ var ViewModel = function() {
 
   var strikeData = DroneRequest();
 
-  // successful AJAX call will run the following code
+  // successful AJAX call will run the following
   strikeData.done(function(response) {
     response.strike.forEach(function(strike) {
       var marker = new google.maps.Marker({

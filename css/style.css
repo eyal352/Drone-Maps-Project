@@ -27,6 +27,15 @@ body {
   padding: 50px 0 0 0;
 }
 
+p {
+  margin-bottom: 0px;
+}
+
+li {
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
 nav {color: rgba(153, 153, 153, .5);}
 
 .navmenu {
@@ -94,5 +103,10 @@ nav {color: rgba(153, 153, 153, .5);}
 @media screen and (max-width: 991px) {
   #array-list {
   height: 90%;
+  }
+
+  #searchMenu {
+    margin-top: 10px;
+    margin-left: 15px;
   }
 }
