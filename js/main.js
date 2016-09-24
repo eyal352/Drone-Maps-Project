@@ -1,16 +1,15 @@
 'use strict'
 
-var map;
+var map, bounds, geocoder;
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 18.1195526, lng: 45.7935141},
     zoom: 5
   });
-
+  bounds = new google.maps.LatLngBounds();
   ko.applyBindings(new ViewModel());
 };
-var geocoder;
 
 var ViewModel = function() {
   var self = this;
@@ -18,16 +17,37 @@ var ViewModel = function() {
 
   this.strikeArray = ko.observableArray();
 
-  geocoder = new google.maps.Geocoder();
-  
-//  this.searchInput = ko.observable("");
-  
- /*  self.search = ko.computed(function() {
-    // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
-    return ko.utils.arrayFilter(self.strikeArray(), function(place) {
-            return place.name.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0;
-    });
-  }); */
+  geocoder = new google.maps.Geocoder();  // geocode strike results with no Lat Lng value
+  // declaring input variable
+  this.searchInput = ko.observable("");
+
+  this.searchResults = ko.computed(function() {
+    // if no input, return full array
+    if (self.searchInput() === "") {
+      // show all results on map
+      $.map(self.strikeArray(), function(strike){
+        strike.marker.setVisible(true);
+        });
+      // show full list array
+      return self.strikeArray();
+    } else {
+      // reset bounds to clear it
+      bounds = new google.maps.LatLngBounds();
+
+      return ko.utils.arrayFilter(self.strikeArray(), function(strike) {
+      // logic for match to year or country
+      var match = strike.country.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0 || strike.date.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0;
+      strike.marker.setVisible(match);
+      // if position has extended bounds, include on visible map
+      if(match && strike.marker.position) {
+        bounds.extend(strike.marker.position);
+        map.fitBounds(bounds);
+        }
+      // if match returns, include in the list view display
+      return match;
+      });
+    }
+  });
 
 
   this.showInfo = function(strikeObject) {
@@ -43,7 +63,7 @@ var ViewModel = function() {
     url: 'http://api.dronestre.am/data',
     dataType: 'jsonp',
   })
-  // If there is an error detected, the following code will execute
+  // If error detected, execute the following code
     .error(function(jqXHR, exception) {
          var msg = '';
           if (jqXHR.status === 0) {
@@ -79,6 +99,7 @@ var ViewModel = function() {
                   } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
                     //  setTimeout(wait, 5000);
                     //  console.log(strike.number);
+                    console.log('Queries over the Google limit');
                   } else { console.log('Geocode was not successful for the following reason: ' + status + ' for ' + strike.number); }
               }) : {lat: Number(strike.lat), lng: Number(strike.lon)},
         title: strike.location,
@@ -101,20 +122,21 @@ var ViewModel = function() {
         this.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function () {
             marker.setAnimation(null);
-              }, 700);
+              }, 750);
       });
+      // if position extend bounds, include on visible map
+      if (strike.marker.position) {
+        bounds.extend(strike.marker.position);
+      }
 
       self.strikeArray.push(strike);
-      })
+      });
+    map.fitBounds(bounds);
+  });
+  console.log(self.strikeArray());
+}
 
-  })
-  
-  
   // display error message if Google Maps doesn't load
   function googleError() {
     document.getElementById('map').innerHTML = "<h2>Google Maps did not load. Please refresh the page and try again.</h2>";
     };
-
-  console.log(self.strikeArray());
-}
-
