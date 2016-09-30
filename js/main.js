@@ -9,25 +9,27 @@ function initMap() {
   });
   bounds = new google.maps.LatLngBounds();
   ko.applyBindings(new ViewModel());
-};
+}
 
 var ViewModel = function() {
   var self = this;
   var strikeLocations;
 
-  this.strikeArray = ko.observableArray();
+  self.strikeArray = ko.observableArray();
 
   geocoder = new google.maps.Geocoder();  // to geocode strike results with no Lat Lng value
 
-  this.searchInput = ko.observable(""); // declaring input variable
+  self.searchInput = ko.observable(""); // declaring input variable
 
-  this.searchResults = ko.computed(function() {
+  self.searchResults = ko.computed(function() {
+    
     // if no input, return full array
     if (self.searchInput() === "") {
+
       // show all results on map
-      $.map(self.strikeArray(), function(strike){
+     $.map(self.strikeArray(), function(strike){
         strike.marker.setVisible(true);
-        });
+      });
       // show full list array
       return self.strikeArray();
     } else {
@@ -35,24 +37,24 @@ var ViewModel = function() {
       bounds = new google.maps.LatLngBounds();
 
       return ko.utils.arrayFilter(self.strikeArray(), function(strike) {
-      // logic for match to year or country
-      var match = strike.country.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0 || strike.date.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0;
-      strike.marker.setVisible(match);
-      // if position has extended bounds, include on visible map
-      if(match && strike.marker.position) {
-        bounds.extend(strike.marker.position);
-        map.fitBounds(bounds);
+        // logic for match to year or country
+        var match = strike.country.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0 || strike.date.toLowerCase().indexOf(self.searchInput().toLowerCase()) >= 0;
+        strike.marker.setVisible(match);
+        // if position has extended bounds, include on visible map
+        if(match && strike.marker.position) {
+          bounds.extend(strike.marker.position);
+          map.fitBounds(bounds);
         }
-      // if match returns, include in the list view display
-      return match;
+        // if match returns, include in the list view display
+        return match;
       });
     }
   });
 
   //show info window when the list item is clicked
-  this.showInfo = function(strikeObject) {
+  self.showInfo = function(strikeObject) {
     google.maps.event.trigger(strikeObject.marker, 'click');
-    }
+    };
   var infowindow = new google.maps.InfoWindow();
 
 // ajax for Drone Strike Data
@@ -62,7 +64,7 @@ var ViewModel = function() {
     dataType: 'jsonp',
   })
   // If error detected, execute the following code
-    .error(function(jqXHR, exception) {
+    .fail(function(jqXHR, exception) {
          var msg = '';
           if (jqXHR.status === 0) {
               msg = 'Not connect.\n Verify Network.';
@@ -120,7 +122,7 @@ var ViewModel = function() {
         this.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function () {
             marker.setAnimation(null);
-              }, 750);
+              }, 700);
       });
       // if position extend bounds, include on visible map
       if (strike.marker.position) {
@@ -132,9 +134,9 @@ var ViewModel = function() {
     map.fitBounds(bounds);
   });
   console.log(self.strikeArray());
-}
+};
 
   // display error message if Google Maps doesn't load
-  function googleError() {
-    document.getElementById('map').innerHTML = "<h2>Google Maps did not load. Please refresh the page and try again.</h2>";
-    };
+function googleError() {
+  document.getElementById('map').innerHTML = "<h2>Google Maps did not load. Please refresh the page and try again.</h2>";
+}
