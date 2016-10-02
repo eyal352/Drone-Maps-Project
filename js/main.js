@@ -22,19 +22,26 @@ var ViewModel = function() {
   self.searchInput = ko.observable(""); // declaring input variable
 
   self.searchResults = ko.computed(function() {
-    
+
     // if no input, return full array
     if (self.searchInput() === "") {
-
       // show all results on map
-     $.map(self.strikeArray(), function(strike){
-        strike.marker.setVisible(true);
-      });
-      // show full list array
+        // create a new bounds object
+        bounds = new google.maps.LatLngBounds();
+        // loop through strikeArray
+        // if strike.marker.position exists,
+        // extends bounds with it
+        self.strikeArray().forEach(function(strike) {
+          strike.marker.setVisible(true);
+          if (strike.marker.position) bounds.extend(strike.marker.position);
+        });
+        // finally call map's fitBounds method with the bounds
+        map.fitBounds(bounds);
+        // show full list array
       return self.strikeArray();
     } else {
-      // reset bounds to clear it
-      bounds = new google.maps.LatLngBounds();
+        // reset bounds to clear it
+        bounds = new google.maps.LatLngBounds();
 
       return ko.utils.arrayFilter(self.strikeArray(), function(strike) {
         // logic for match to year or country
@@ -63,7 +70,52 @@ var ViewModel = function() {
     url: 'http://api.dronestre.am/data',
     dataType: 'jsonp',
   })
-  // If error detected, execute the following code
+  .done(function(response) {
+      response.strike.forEach(function(strike) {
+        var marker = new google.maps.Marker({
+          // defaults position to the town name if the lat and long are missing
+          position: strike.lat === "" && strike.lon === "" ? geocoder.geocode( { 'address': strike.location}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();
+                    } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                      //  setTimeout(wait, 5000);
+                      //  console.log(strike.number);
+                      console.log('Queries over the Google limit');
+                    } else { console.log('Geocode was not successful for the following reason: ' + status + ' for ' + strike.number); }
+                }) : {lat: Number(strike.lat), lng: Number(strike.lon)},
+          title: strike.location,
+          animation: google.maps.Animation.DROP,
+          icon:  'img/bomb.png',
+          map: map,
+          deaths: strike.deaths,
+          strikeDate: strike.date.slice(0,10),
+          narrative: strike.narrative,
+          town: strike.town === "" ? 'Unknown town name' : strike.town,
+          article: strike.bij_link,
+          });
+        strike.marker = marker;
+
+        var windowContent = '<div>'+ strike.narrative + '</div>' + "<div> <b>Location: </b>" + marker.town + ' in ' + marker.title + '</div>' + '</div>' + marker.deaths + ' Reported Casualties on ' + marker.strikeDate + '</div>' + '<div> Read more about the strike at <a href="'+ marker.article + '"target="_blank"> The Bureau Investigates </a></div>' + '<div>' + '<b>Learn more about ' + marker.title + ' on </b>' + '<a href="http://en.wikipedia.org/wiki/'+marker.title+'"' + 'target="_blank">' + 'Wikipedia' + '</a>' + '</div>';
+
+        google.maps.event.addListener(marker, 'click', function () {
+          infowindow.open(map, this);
+          infowindow.setContent(windowContent);
+          this.setAnimation(google.maps.Animation.BOUNCE);
+              setTimeout(function () {
+              marker.setAnimation(null);
+                }, 700);
+        });
+        // if position extend bounds, include on visible map
+        if (strike.marker.position) {
+          bounds.extend(strike.marker.position);
+        }
+
+        self.strikeArray.push(strike);
+        });
+      map.fitBounds(bounds);
+    })
+      // If error detected, execute the following code
     .fail(function(jqXHR, exception) {
          var msg = '';
           if (jqXHR.status === 0) {
@@ -86,53 +138,6 @@ var ViewModel = function() {
   }
 
   var strikeData = DroneRequest();
-
-  // successful AJAX call will run the following
-  strikeData.done(function(response) {
-    response.strike.forEach(function(strike) {
-      var marker = new google.maps.Marker({
-        // defaults position to the town name if the lat and long are missing
-        position: strike.lat === "" && strike.lon === "" ? geocoder.geocode( { 'address': strike.location}, function(results, status) {
-              if (status == google.maps.GeocoderStatus.OK) {
-                  var latitude = results[0].geometry.location.lat();
-                  var longitude = results[0].geometry.location.lng();
-                  } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                    //  setTimeout(wait, 5000);
-                    //  console.log(strike.number);
-                    console.log('Queries over the Google limit');
-                  } else { console.log('Geocode was not successful for the following reason: ' + status + ' for ' + strike.number); }
-              }) : {lat: Number(strike.lat), lng: Number(strike.lon)},
-        title: strike.location,
-        animation: google.maps.Animation.DROP,
-        icon:  'img/bomb.png',
-        map: map,
-        deaths: strike.deaths,
-        strikeDate: strike.date.slice(0,10),
-        narrative: strike.narrative,
-        town: strike.town === "" ? 'Unknown town name' : strike.town,
-        article: strike.bij_link,
-        });
-      strike.marker = marker;
-
-      var windowContent = '<div>'+ strike.narrative + '</div>' + "<div> <b>Location: </b>" + marker.town + ' in ' + marker.title + '</div>' + '</div>' + marker.deaths + ' Reported Casualties on ' + marker.strikeDate + '</div>' + '<div> Read more about the strike at <a href="'+ marker.article + '"target="_blank"> The Bureau Investigates </a></div>' + '<div>' + '<b>Learn more about ' + marker.title + ' on </b>' + '<a href="http://en.wikipedia.org/wiki/'+marker.title+'"' + 'target="_blank">' + 'Wikipedia' + '</a>' + '</div>';
-
-      google.maps.event.addListener(marker, 'click', function () {
-        infowindow.open(map, this);
-        infowindow.setContent(windowContent);
-        this.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(function () {
-            marker.setAnimation(null);
-              }, 700);
-      });
-      // if position extend bounds, include on visible map
-      if (strike.marker.position) {
-        bounds.extend(strike.marker.position);
-      }
-
-      self.strikeArray.push(strike);
-      });
-    map.fitBounds(bounds);
-  });
   console.log(self.strikeArray());
 };
 
