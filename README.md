@@ -3,7 +3,7 @@
 
 The goal of the Drone Strike Project is to build a webapp to help visualize U.S. military drone strikes across Africa and the Middle East.
 
-This is achieved through the use of data from the [dronestre.am API](http://dronestre.am"), which provides detailed JSON objects of drone strikes, when they occurred, their Lattitude and Longitude coordinates, how many reported deaths, as well as other relevant information. In addition to this, relevent articles from [Wikipedia](https://www.wikipedia.org) and [The Bureau Investigates](https://www.thebureauinvestigates.com/) have been linked to each strike to provide context and additional information.
+This is achieved through the use of data from the [dronestre.am API](http://dronestre.am), which provides detailed JSON objects of drone strikes, when they occurred, their Lattitude and Longitude coordinates, how many reported deaths, as well as other relevant information. In addition to this, relevent articles from [Wikipedia](https://www.wikipedia.org) and [The Bureau Investigates](https://www.thebureauinvestigates.com/) have been linked to each strike to provide context and additional information.
 
 The Drone Strike Project can be viewed live via [this](http://www.eyalchistik.com/Drone-Maps-Project/) link. Alternatively, you can clone or download the repository and open the index.html file. You will need a working internet connection for all the components to work.
 
